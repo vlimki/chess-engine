@@ -3,7 +3,7 @@ const util = @import("util.zig");
 
 pub const Bitboard = u64;
 pub const Square = u6;
-pub const Move = i7;
+pub const Move = i8;
 
 const FEN = []u8;
 

@@ -11,5 +11,6 @@ pub fn main() void {
     board.debug_bitboard(b.white.king | b.black.king);
     board.debug_bitboard(b.white.rook | b.white.knight);
     b.print();
-    board.debug_bitboard(moves.generate_knight_moves(1));
+    board.debug_bitboard(moves.generate_knight_moves(6));
+    board.debug_bitboard(moves.generate_bishop_moves(57));
 }
