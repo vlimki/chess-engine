@@ -27,7 +27,13 @@ pub fn bitboard_insert_piece(self: *Bitboard, pos: u6) void {
     self.* |= one << @intCast(pos);
 }
 
-pub fn debug_bitboard(bitboard: u64) void {
+pub fn bitboard_move_piece(self: *Bitboard, src: Square, dst: Square) void {
+    const one: u64 = 1;
+    self.* ^= (one << src);
+    self.* |= (one << dst);
+}
+
+pub fn bitboard_debug(bitboard: u64) void {
     const one: u64 = 1;
 
     var s = [1]u8{'0'} ** 64;
@@ -63,7 +69,7 @@ pub const Board = struct {
     }
 
     pub fn print(self: Board) void {
-        debug_bitboard(self.black.king | self.black.queen | self.black.rook | self.black.knight | self.black.bishop | self.black.pawn | self.white.king | self.white.queen | self.white.rook | self.white.knight | self.white.bishop | self.white.pawn);
+        bitboard_debug(self.black.king | self.black.queen | self.black.rook | self.black.knight | self.black.bishop | self.black.pawn | self.white.king | self.white.queen | self.white.rook | self.white.knight | self.white.bishop | self.white.pawn);
     }
 
     pub fn insert_piece(self: *Board, c: u8, pos: u6) void {

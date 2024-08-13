@@ -77,7 +77,6 @@ pub fn generate_bishop_moves(square: board.Square) board.Bitboard {
             const new_col = @rem(new_square, 8);
 
             if (!(new_col == col or new_row == row) and new_square > 0 and new_square < 64 and (@abs(@divFloor(new_square, 8) - row) == @abs(@rem(new_square, 8) - col))) {
-                std.debug.print("Found move at {} for square {} ({})\n", .{ move, square, new_square });
                 if (new_square > 0) {
                     attacks |= (one << @intCast(new_square));
                 } else {
