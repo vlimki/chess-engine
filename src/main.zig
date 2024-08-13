@@ -1,6 +1,3 @@
-//! By convention, main.zig is where your main function lives in the case that
-//! you are building an executable. If you are making a library, the convention
-//! is to delete this file and start with root.zig instead.
 const std = @import("std");
 
 const Bitboard = u64;
@@ -37,7 +34,16 @@ fn debug_bitboard(bitboard: u64) void {
         }
     }
 
-    std.debug.print("{s}\n", .{result});
+    std.debug.print("--------------\n", .{});
+
+    for (result, 0..) |c, idx| {
+        if ((idx + 1) % 8 == 0) {
+            std.debug.print("{c}\n", .{c});
+            continue;
+        }
+
+        std.debug.print("{c} ", .{c});
+    }
 }
 
 const Board = struct {
