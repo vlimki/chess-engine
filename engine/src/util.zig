@@ -10,6 +10,14 @@ pub fn reverse(input: []const u8) [64]u8 {
     return output;
 }
 
+pub fn col(square: u6) u6 {
+    return square % 8;
+}
+
+pub fn row(square: u6) u6 {
+    return @divFloor(square, 8);
+}
+
 pub fn split(allocator: *std.mem.Allocator, input: []const u8, n: usize) []const []const u8 {
     const length = (input.len + n - 1) / n;
     var parts = allocator.alloc([]const u8, length) catch return undefined;

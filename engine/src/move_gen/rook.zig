@@ -1,4 +1,5 @@
 const board = @import("../board.zig");
+const std = @import("std");
 
 pub const ATTACK_TABLE: [64]board.Bitboard = init_attack_table();
 
@@ -18,14 +19,13 @@ pub fn generate_rook_moves(square: board.Square) board.Bitboard {
     var attacks: board.Bitboard = 0;
 
     for (directions) |d| {
-        var i: i8 = 0;
+        var i: i8 = 1;
         while (true) {
             const new_square: i8 = @as(i8, square) + i * d;
             const row = new_square / 8;
             const col = @rem(new_square, 8);
 
-            i += 1;
-            if (new_square < 64 and new_square > 0) {
+            if (new_square < 64 and new_square >= 0) {
                 if (new_square != square) {
                     attacks |= (one << new_square);
                 }
@@ -33,7 +33,9 @@ pub fn generate_rook_moves(square: board.Square) board.Bitboard {
                 break;
             }
 
-            if (row == 7 or col == 7 or col == 0 or row == 0) {
+            i += 1;
+
+            if ((row == 7 and d > 0) or (col == 7 and d > 0) or (col == 0 and d < 0) or (row == 0 and d < 0)) {
                 break;
             }
         }
