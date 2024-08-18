@@ -11,11 +11,8 @@ pub fn main() void {
     // board.bitboard_debug(b.white.king | b.black.king);
     // board.bitboard_debug(b.white.rook | b.white.knight);
     // board.bitboard_debug(move_gen.ATTACK_TABLE_KNIGHT[6]);
-    board.bitboard_debug(move_gen.ATTACK_TABLE_QUEEN[62]);
-    board.bitboard_debug(move_gen.ATTACK_TABLE_KING[62]);
-    board.bitboard_debug(move_gen.ATTACK_TABLE_ROOK[62]);
-    board.bitboard_debug(move_gen.ATTACK_TABLE_BISHOP[62]);
-    // b.print();
-    // board.bitboard_move_piece(&b.white.pawn, 12, 28);
-    // b.print();
+    board.bitboard_debug(move_gen.ATTACK_TABLE_BLACK_QUEEN[62]);
+    board.bitboard_debug(move_gen.ATTACK_TABLE_BLACK_KING[62]);
+    board.bitboard_debug(move_gen.ATTACK_TABLE_WHITE_PAWN[54]);
+    board.bitboard_debug(move_gen.ATTACK_TABLE_BLACK_BISHOP[62]);
 }

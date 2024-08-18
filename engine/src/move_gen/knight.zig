@@ -1,10 +1,9 @@
 const board = @import("../board.zig");
 
-pub const ATTACK_TABLE: [64]board.Bitboard = init_attack_table();
+pub const ATTACK_TABLE_WHITE: [64]board.Bitboard = init_attack_table_white();
+pub const ATTACK_TABLE_BLACK: [64]board.Bitboard = init_attack_table_black();
 
-const MOVES: [8]board.Move = [_]board.Move{ 15, 17, -15, -17, 6, 10, -6, -10 };
-
-pub fn init_attack_table() [64]board.Bitboard {
+pub fn init_attack_table_white() [64]board.Bitboard {
     var table: [64]board.Bitboard = undefined;
     for (0..64) |idx| {
         table[idx] = generate_knight_moves(idx);
@@ -12,7 +11,16 @@ pub fn init_attack_table() [64]board.Bitboard {
     return table;
 }
 
-pub fn generate_knight_moves(square: board.Square) board.Bitboard {
+pub fn init_attack_table_black() [64]board.Bitboard {
+    var table: [64]board.Bitboard = undefined;
+    for (0..64) |idx| {
+        table[idx] = generate_knight_moves(idx);
+    }
+    return table;
+}
+
+pub fn generate_knight_moves(square: board.Square, color: board.Color) board.Bitboard {
+    const directions: [8]board.Move = [_]board.Move{ 15, 17, -15, -17, 6, 10, -6, -10 };
     const row = square / 8;
     const col = @rem(square, 8);
     const one: u64 = @as(u64, 1);
@@ -20,9 +28,9 @@ pub fn generate_knight_moves(square: board.Square) board.Bitboard {
 
     var attacks: board.Bitboard = 0;
 
-    for (MOVES) |move| {
-        if (board_max - move - @as(i8, square) > 0 and square + move < 64) {
-            const new_square = square + move;
+    for (directions) |d| {
+        if (board_max - d - @as(i8, square) > 0 and square + d < 64) {
+            const new_square: i8 = if (color == board.Color.white) @as(i8, square) + d else @as(i8, square) - d;
             const new_row = @divFloor(new_square, 8);
             const new_col = @rem(new_square, 8);
 

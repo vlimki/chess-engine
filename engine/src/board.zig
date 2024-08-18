@@ -5,6 +5,8 @@ pub const Bitboard = u64;
 pub const Square = u6;
 pub const Move = i8;
 
+pub const Color = enum { white, black };
+
 const FEN = []u8;
 
 pub const STARTING_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

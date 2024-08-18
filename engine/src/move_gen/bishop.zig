@@ -1,8 +1,17 @@
 const board = @import("../board.zig");
 
-pub const ATTACK_TABLE: [64]board.Bitboard = init_attack_table();
+pub const ATTACK_TABLE_WHITE: [64]board.Bitboard = init_attack_table_white();
+pub const ATTACK_TABLE_BLACK: [64]board.Bitboard = init_attack_table_black();
 
-pub fn init_attack_table() [64]board.Bitboard {
+pub fn init_attack_table_white() [64]board.Bitboard {
+    var table: [64]board.Bitboard = undefined;
+    for (0..64) |idx| {
+        table[idx] = generate_bishop_moves(idx);
+    }
+    return table;
+}
+
+pub fn init_attack_table_black() [64]board.Bitboard {
     var table: [64]board.Bitboard = undefined;
     for (0..64) |idx| {
         table[idx] = generate_bishop_moves(idx);
