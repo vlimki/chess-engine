@@ -52,3 +52,40 @@ pub fn generate_rook_moves(square: board.Square) board.Bitboard {
 
     return attacks;
 }
+
+pub fn legal_moves(square: board.Square, color: board.Color, b: board.Board) board.Bitboard {
+    @setEvalBranchQuota(10000);
+    const one: u64 = @as(u64, 1);
+
+    var attacks: board.Bitboard = 0;
+
+    for (DIRECTIONS) |d| {
+        var i: i8 = 1;
+        while (true) {
+            const new_square: i8 = @as(i8, square) + i * d;
+            const row = @divFloor(new_square, 8);
+            const col = @rem(new_square, 8);
+
+            i += 1;
+            if (new_square < 64 and new_square >= 0) {
+                if (new_square != square) {
+                    if (b.pieces(color) & (one << @intCast(new_square)) == 0) {
+                        attacks |= (one << @intCast(new_square));
+                        if (b.pieces(board.opponent_color(color)) & (one << @intCast(new_square)) != 0) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                if ((row == 7 and d > 0) or (col == 7 and d > 0) or (col == 0 and d < 0) or (row == 0 and d < 0)) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    return attacks;
+}
