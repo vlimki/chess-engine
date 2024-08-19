@@ -1,4 +1,6 @@
 const board = @import("../board.zig");
+const bishop = @import("bishop.zig");
+const rook = @import("rook.zig");
 
 pub const ATTACK_TABLE_WHITE: [64]board.Bitboard = init_attack_table_white();
 pub const ATTACK_TABLE_BLACK: [64]board.Bitboard = init_attack_table_black();
@@ -49,4 +51,9 @@ pub fn generate_queen_moves(square: board.Square) board.Bitboard {
     }
 
     return attacks;
+}
+
+pub fn legal_moves(square: board.Square, color: board.Color, b: board.Board) board.Bitboard {
+    @setEvalBranchQuota(10000);
+    return bishop.legal_moves(square, color, b) | rook.legal_moves(square, color, b);
 }
