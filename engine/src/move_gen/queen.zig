@@ -2,6 +2,7 @@ const board = @import("../board.zig");
 
 pub const ATTACK_TABLE_WHITE: [64]board.Bitboard = init_attack_table_white();
 pub const ATTACK_TABLE_BLACK: [64]board.Bitboard = init_attack_table_black();
+pub const DIRECTIONS: [8]i8 = [8]i8{ 1, -1, 7, -7, 8, -8, 9, -9 };
 
 pub fn init_attack_table_white() [64]board.Bitboard {
     var table: [64]board.Bitboard = undefined;
@@ -20,13 +21,12 @@ pub fn init_attack_table_black() [64]board.Bitboard {
 }
 
 pub fn generate_queen_moves(square: board.Square) board.Bitboard {
-    const directions: [8]i8 = [8]i8{ 1, -1, 7, -7, 8, -8, 9, -9 };
     @setEvalBranchQuota(10000);
     const one: u64 = @as(u64, 1);
 
     var attacks: board.Bitboard = 0;
 
-    for (directions) |d| {
+    for (DIRECTIONS) |d| {
         var i: i8 = 1;
         while (true) {
             const new_square: i8 = @as(i8, square) + i * d;

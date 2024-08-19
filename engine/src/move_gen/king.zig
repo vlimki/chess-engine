@@ -2,6 +2,7 @@ const board = @import("../board.zig");
 
 pub const ATTACK_TABLE_WHITE: [64]board.Bitboard = init_attack_table_white();
 pub const ATTACK_TABLE_BLACK: [64]board.Bitboard = init_attack_table_black();
+pub const DIRECTIONS: [8]i8 = [8]i8{ 1, -1, 7, -7, 8, -8, 9, -9 };
 
 pub fn init_attack_table_white() [64]board.Bitboard {
     var table: [64]board.Bitboard = undefined;
@@ -20,7 +21,6 @@ pub fn init_attack_table_black() [64]board.Bitboard {
 }
 
 pub fn generate_king_moves(square: board.Square, color: board.Color) board.Bitboard {
-    const directions: [8]i8 = [8]i8{ 1, -1, 7, -7, 8, -8, 9, -9 };
     @setEvalBranchQuota(10000);
 
     const row = square / 8;
@@ -30,7 +30,7 @@ pub fn generate_king_moves(square: board.Square, color: board.Color) board.Bitbo
 
     var attacks: board.Bitboard = 0;
 
-    for (directions) |d| {
+    for (DIRECTIONS) |d| {
         const new_square: i8 = if (color == board.Color.white) @as(i8, square) + d else @as(i8, square) - d;
         const new_row = new_square / 8;
         const new_col = @rem(new_square, 8);

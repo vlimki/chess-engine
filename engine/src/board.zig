@@ -1,11 +1,16 @@
 const std = @import("std");
 const util = @import("util.zig");
+const move_gen = @import("move_gen/module.zig");
 
 pub const Bitboard = u64;
 pub const Square = u6;
 pub const Move = i8;
 
 pub const Color = enum { white, black };
+
+pub fn opponent_color(own: Color) Color {
+    return if (own == Color.white) Color.black else Color.white;
+}
 
 const FEN = []u8;
 
@@ -68,6 +73,18 @@ pub const Board = struct {
 
     pub fn empty() Board {
         return Board{ .black = Pieces.empty(), .white = Pieces.empty() };
+    }
+
+    pub fn legal_moves(self: Board, moves: Bitboard, color: Color) Bitboard {
+        const ownPieces = self.pieces(color);
+        return (moves & (~ownPieces));
+    }
+
+    pub fn pieces(self: Board, color: Color) Bitboard {
+        return switch (color) {
+            Color.white => self.white.king | self.white.queen | self.white.rook | self.white.bishop | self.white.knight | self.white.pawn,
+            Color.black => self.black.king | self.black.queen | self.black.rook | self.black.bishop | self.black.knight | self.black.pawn,
+        };
     }
 
     pub fn print(self: Board) void {
