@@ -34,6 +34,25 @@ pub fn bitboard_insert_piece(self: *Bitboard, pos: u6) void {
     self.* |= one << @intCast(pos);
 }
 
+pub fn bitboard_squares(self: *const Bitboard) []Square {
+    const allocator = std.heap.page_allocator;
+    var squares = std.ArrayList(Square).init(allocator);
+
+    const one: u64 = @as(u64, 1);
+    var i: u6 = 0;
+
+    while (i < 64) : (i += 1) {
+        if (self.* & (one << i) != 0) {
+            squares.append(i) catch return &[0]Square{};
+        }
+        if (i == 63) {
+            break;
+        }
+    }
+
+    return squares.items;
+}
+
 pub fn bitboard_move_piece(self: *Bitboard, src: Square, dst: Square) void {
     const one: u64 = 1;
     self.* ^= (one << src);
@@ -78,6 +97,45 @@ pub const Board = struct {
     pub fn legal_moves(self: Board, moves: Bitboard, color: Color) Bitboard {
         const ownPieces = self.pieces(color);
         return (moves & (~ownPieces));
+    }
+
+    // What is this disgusting code
+    pub fn eval(self: Board) f32 {
+        return 100 * @as(f32, @floatFromInt(@popCount(self.white.king))) - 100 * @as(f32, @floatFromInt(@popCount(self.black.king))) + 9 * @as(f32, @floatFromInt(@popCount(self.white.queen))) - 9 * @as(f32, @floatFromInt(@popCount(self.black.queen))) + 5 * @as(f32, @floatFromInt(@popCount(self.white.rook))) - 5 * @as(f32, @floatFromInt(@popCount(self.black.rook))) + 3 * @as(f32, @floatFromInt(@popCount(self.white.bishop))) - 3 * @as(f32, @floatFromInt(@popCount(self.black.bishop))) + 3 * @as(f32, @floatFromInt(@popCount(self.white.knight))) - 3 * @as(f32, @floatFromInt(@popCount(self.black.knight))) + 1 * @as(f32, @floatFromInt(@popCount(self.white.pawn))) - 1 * @as(f32, @floatFromInt(@popCount(self.black.pawn))) + 0.1 * @as(f32, @floatFromInt(n_legal_moves(self, Color.white))) - 0.1 * @as(f32, @floatFromInt(n_legal_moves(self, Color.black)));
+    }
+
+    // What is this disgusting code
+    pub fn n_legal_moves(self: Board, color: Color) i16 {
+        var moves: i16 = 0;
+
+        switch (color) {
+            Color.white => {
+                for (bitboard_squares(&self.white.queen)) |sq| {
+                    moves += @popCount(move_gen.queen.legal_moves(sq, color, self));
+                }
+                for (bitboard_squares(&self.white.bishop)) |sq| {
+                    moves += @popCount(move_gen.bishop.legal_moves(sq, color, self));
+                }
+                for (bitboard_squares(&self.white.rook)) |sq| {
+                    moves += @popCount(move_gen.rook.legal_moves(sq, color, self));
+                }
+                return moves;
+            },
+            Color.black => {
+                for (bitboard_squares(&self.black.queen)) |sq| {
+                    moves += @popCount(move_gen.queen.legal_moves(sq, color, self));
+                }
+                for (bitboard_squares(&self.black.bishop)) |sq| {
+                    moves += @popCount(move_gen.bishop.legal_moves(sq, color, self));
+                }
+                for (bitboard_squares(&self.black.rook)) |sq| {
+                    moves += @popCount(move_gen.rook.legal_moves(sq, color, self));
+                }
+                return moves;
+            },
+        }
+
+        return moves;
     }
 
     pub fn pieces(self: Board, color: Color) Bitboard {
